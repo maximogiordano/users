@@ -1,6 +1,7 @@
 package com.maximogiordano.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.maximogiordano.users.validation.UniquePhones;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ public class UserDto {
     @NotBlank
     private String password;
 
+    @UniquePhones
     private List<@NotNull @Valid PhoneDto> phones;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
