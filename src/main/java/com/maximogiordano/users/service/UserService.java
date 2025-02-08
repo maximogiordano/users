@@ -10,6 +10,7 @@ import com.maximogiordano.users.repository.UserRepository;
 import com.maximogiordano.users.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ConversionService conversionService;
     private final DateTimeUtils dateTimeUtils;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDto signUp(@Valid UserDto userDto) {
         User user = Objects.requireNonNull(conversionService.convert(userDto, User.class));
@@ -32,6 +34,7 @@ public class UserService {
             throw new ConflictException("the given user already exists");
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
 
         return conversionService.convert(user, UserDto.class);
@@ -46,7 +49,7 @@ public class UserService {
 
         var user = userOptional.get();
 
-        if (!user.getPassword().equals(login.getPassword())) {
+        if (!passwordEncoder.matches(login.getPassword(), user.getPassword())) {
             throw new CredentialsException("invalid credentials");
         }
 

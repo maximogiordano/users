@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -40,6 +41,9 @@ class UserServiceTest {
     @Mock
     DateTimeUtils dateTimeUtils; // dependency
 
+    @Mock
+    PasswordEncoder passwordEncoder; // dependency
+
     @Test
     void signUpOK() {
         // given an input
@@ -61,12 +65,22 @@ class UserServiceTest {
         inputAsUser.setLastLogin(now);
         inputAsUser.setIsActive(true);
 
+        // and the same input with an encoded password
+        User inputAsUserWithHashedPass = new User();
+
+        inputAsUserWithHashedPass.setEmail("john.doe@email.com");
+        inputAsUserWithHashedPass.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
+        inputAsUserWithHashedPass.setPhones(List.of());
+        inputAsUserWithHashedPass.setCreated(now);
+        inputAsUserWithHashedPass.setLastLogin(now);
+        inputAsUserWithHashedPass.setIsActive(true);
+
         // and the created user
         User createdUser = new User();
 
         createdUser.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         createdUser.setEmail("john.doe@email.com");
-        createdUser.setPassword("J0hn.D03");
+        createdUser.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         createdUser.setPhones(List.of());
         createdUser.setCreated(now);
         createdUser.setLastLogin(now);
@@ -77,7 +91,7 @@ class UserServiceTest {
 
         createdUserAsUserDto.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         createdUserAsUserDto.setEmail("john.doe@email.com");
-        createdUserAsUserDto.setPassword("J0hn.D03");
+        createdUserAsUserDto.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         createdUserAsUserDto.setPhones(List.of());
         createdUserAsUserDto.setCreated(now);
         createdUserAsUserDto.setLastLogin(now);
@@ -86,7 +100,9 @@ class UserServiceTest {
         // and the mocks behavior
         when(conversionService.convert(input, User.class)).thenReturn(inputAsUser);
         when(userRepository.existsByEmail("john.doe@email.com")).thenReturn(false);
-        when(userRepository.save(inputAsUser)).thenReturn(createdUser);
+        when(passwordEncoder.encode("J0hn.D03"))
+                .thenReturn("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
+        when(userRepository.save(inputAsUserWithHashedPass)).thenReturn(createdUser);
         when(conversionService.convert(createdUser, UserDto.class)).thenReturn(createdUserAsUserDto);
 
         // when the signUp method is called with the given input
@@ -95,6 +111,7 @@ class UserServiceTest {
         // then the corresponding methods are called
         verify(conversionService).convert(input, User.class);
         verify(userRepository).existsByEmail("john.doe@email.com");
+        verify(passwordEncoder).encode("J0hn.D03");
         verify(userRepository).save(inputAsUser);
         verify(conversionService).convert(createdUser, UserDto.class);
 
@@ -154,7 +171,7 @@ class UserServiceTest {
 
         storedUser.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         storedUser.setEmail("john.doe@email.com");
-        storedUser.setPassword("J0hn.D03");
+        storedUser.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         storedUser.setPhones(List.of());
         storedUser.setCreated(OffsetDateTime.of(2024, 2, 6, 10, 15, 30, 0, ZoneOffset.UTC));
         storedUser.setLastLogin(OffsetDateTime.of(2024, 2, 6, 23, 56, 13, 0, ZoneOffset.UTC));
@@ -165,7 +182,7 @@ class UserServiceTest {
 
         updatedUser.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         updatedUser.setEmail("john.doe@email.com");
-        updatedUser.setPassword("J0hn.D03");
+        updatedUser.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         updatedUser.setPhones(List.of());
         updatedUser.setCreated(OffsetDateTime.of(2024, 2, 6, 10, 15, 30, 0, ZoneOffset.UTC));
         updatedUser.setLastLogin(now);
@@ -176,7 +193,7 @@ class UserServiceTest {
 
         updatedUserAsDto.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         updatedUserAsDto.setEmail("john.doe@email.com");
-        updatedUserAsDto.setPassword("J0hn.D03");
+        updatedUserAsDto.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         updatedUserAsDto.setPhones(List.of());
         updatedUserAsDto.setCreated(OffsetDateTime.of(2024, 2, 6, 10, 15, 30, 0, ZoneOffset.UTC));
         updatedUserAsDto.setLastLogin(now);
@@ -184,6 +201,8 @@ class UserServiceTest {
 
         // and the mocks behavior
         when(userRepository.findByEmail("john.doe@email.com")).thenReturn(Optional.of(storedUser));
+        when(passwordEncoder.matches("J0hn.D03", "$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti"))
+                .thenReturn(true);
         when(dateTimeUtils.currentOffsetDateTime()).thenReturn(now);
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
         when(conversionService.convert(updatedUser, UserDto.class)).thenReturn(updatedUserAsDto);
@@ -193,11 +212,12 @@ class UserServiceTest {
 
         // then the corresponding methods are called
         verify(userRepository).findByEmail("john.doe@email.com");
+        verify(passwordEncoder).matches("J0hn.D03", "$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         verify(dateTimeUtils).currentOffsetDateTime();
         verify(userRepository).save(updatedUser);
         verify(conversionService).convert(updatedUser, UserDto.class);
 
-        // and the expected exception is obtained
+        // and the expected result is obtained
         assertEquals(updatedUserAsDto, result);
     }
 
@@ -214,7 +234,7 @@ class UserServiceTest {
 
         storedUser.setId(UUID.fromString("2871e0f1-f35a-4997-b27f-a961d2cc05ad"));
         storedUser.setEmail("john.doe@email.com");
-        storedUser.setPassword("J0hn.D03");
+        storedUser.setPassword("$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
         storedUser.setPhones(List.of());
         storedUser.setCreated(OffsetDateTime.of(2024, 2, 6, 10, 15, 30, 0, ZoneOffset.UTC));
         storedUser.setLastLogin(OffsetDateTime.of(2024, 2, 6, 23, 56, 13, 0, ZoneOffset.UTC));
@@ -222,12 +242,15 @@ class UserServiceTest {
 
         // and the mocks behavior
         when(userRepository.findByEmail("john.doe@email.com")).thenReturn(Optional.of(storedUser));
+        when(passwordEncoder.matches("J0hn.D0e", "$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti"))
+                .thenReturn(false);
 
         // when the login method is called with the given input
         CredentialsException e = assertThrows(CredentialsException.class, () -> userService.login(input));
 
         // then the corresponding methods are called
         verify(userRepository).findByEmail("john.doe@email.com");
+        verify(passwordEncoder).matches("J0hn.D0e", "$2a$12$PZZXY5FKak6RWpbjh59.Zu7.8Fd0QQsmWSuIL2/D5z3uAOXhx52Ti");
 
         // and the expected exception is obtained
         assertEquals("invalid credentials", e.getMessage());
