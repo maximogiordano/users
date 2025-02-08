@@ -1,11 +1,12 @@
 package com.maximogiordano.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.maximogiordano.users.validation.Password;
 import com.maximogiordano.users.validation.UniquePhones;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -18,10 +19,12 @@ public class UserDto {
 
     private String name;
 
-    @NotBlank
+    @NotNull
+    @Email
     private String email;
 
-    @NotBlank
+    @NotNull
+    @Password
     private String password;
 
     @UniquePhones
