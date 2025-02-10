@@ -1,11 +1,11 @@
 package com.maximogiordano.users.controller;
 
-import com.maximogiordano.users.dto.LoginDto;
 import com.maximogiordano.users.dto.UserDto;
 import com.maximogiordano.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public UserDto login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
+    public UserDto login(@RequestHeader("Authorization") String authHeader) {
+        return userService.login(authHeader);
     }
 }

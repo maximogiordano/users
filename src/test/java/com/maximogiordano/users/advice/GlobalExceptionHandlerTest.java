@@ -3,7 +3,6 @@ package com.maximogiordano.users.advice;
 import com.maximogiordano.users.dto.ErrorDto;
 import com.maximogiordano.users.dto.ErrorItemDto;
 import com.maximogiordano.users.exception.ConflictException;
-import com.maximogiordano.users.exception.CredentialsException;
 import com.maximogiordano.users.exception.ResourceNotFoundException;
 import com.maximogiordano.users.utils.DateTimeUtils;
 import org.junit.jupiter.api.Test;
@@ -100,39 +99,6 @@ class GlobalExceptionHandlerTest {
 
         // and the expected output is obtained
         assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-        assertEquals(expectedOutput, result.getBody());
-    }
-
-    @Test
-    void handleCredentialsException() {
-        // given an input Exception
-        CredentialsException inputException = new CredentialsException("some message");
-
-        // and the current date and time with time offset
-        OffsetDateTime now = OffsetDateTime.of(2024, 2, 6, 10, 15, 30, 0, ZoneOffset.UTC);
-
-        // and the expected output
-        ErrorItemDto errorItemDto = new ErrorItemDto();
-
-        errorItemDto.setTimestamp(now);
-        errorItemDto.setCode(GlobalExceptionHandler.CREDENTIALS_ERROR_CODE);
-        errorItemDto.setDetail("some message");
-
-        ErrorDto expectedOutput = new ErrorDto();
-
-        expectedOutput.setErrors(List.of(errorItemDto));
-
-        // and the mocks behavior
-        when(dateTimeUtils.currentOffsetDateTime()).thenReturn(now);
-
-        // when the given input is handled
-        ResponseEntity<ErrorDto> result = globalExceptionHandler.handleCredentialsException(inputException);
-
-        // then the corresponding methods are called
-        verify(dateTimeUtils).currentOffsetDateTime();
-
-        // and the expected output is obtained
-        assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
         assertEquals(expectedOutput, result.getBody());
     }
 

@@ -1,6 +1,5 @@
 package com.maximogiordano.users.controller;
 
-import com.maximogiordano.users.dto.LoginDto;
 import com.maximogiordano.users.dto.UserDto;
 import com.maximogiordano.users.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -49,23 +48,22 @@ class UserControllerTest {
 
     @Test
     void login() {
-        // given the instance used as input by the controller
-        LoginDto input = new LoginDto();
-        input.setEmail("john.doe@email.com");
-        input.setPassword("J0hn.D03");
+        // given an authorization header
+        String authHeader = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXhpbW8uZ2lvcmRhbm8xMEBob3RtYWlsLmNvbSIsImlhdCI6" +
+                "MTczOTE1ODY4MSwiZXhwIjoxNzM5MTU5NTgxfQ.Z6aQ1AhgEat-g_5PPwLVC05T6f9bbISZxt4k6s_AKiA";
 
-        // and the instance used as output by the service
+        // and the login service output for the given header
         UserDto output = new UserDto();
-        output.setEmail(input.getEmail());
-        output.setPassword(input.getPassword());
         output.setId(UUID.randomUUID());
-        when(userService.login(input)).thenReturn(output);
+        output.setEmail("john.doe@email.com");
+        output.setPassword("********");
+        when(userService.login(authHeader)).thenReturn(output);
 
-        // when the controller login method is called
-        UserDto result = userController.login(input);
+        // when the controller login method is called with the given authorization header
+        UserDto result = userController.login(authHeader);
 
-        // then the service login method is called with the same input
-        verify(userService).login(input);
+        // then the service login method is called with the same argument
+        verify(userService).login(authHeader);
 
         // and the controller returns the same instance as the service
         assertEquals(output, result);

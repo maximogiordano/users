@@ -3,7 +3,6 @@ package com.maximogiordano.users.advice;
 import com.maximogiordano.users.dto.ErrorDto;
 import com.maximogiordano.users.dto.ErrorItemDto;
 import com.maximogiordano.users.exception.ConflictException;
-import com.maximogiordano.users.exception.CredentialsException;
 import com.maximogiordano.users.exception.ResourceNotFoundException;
 import com.maximogiordano.users.utils.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     public static final int CONSTRAINT_VIOLATION_ERROR_CODE = 1;
     public static final int CONFLICT_ERROR_CODE = 2;
-    public static final int CREDENTIALS_ERROR_CODE = 3;
-    public static final int RESOURCE_NOT_FOUND_ERROR_CODE = 4;
+    public static final int RESOURCE_NOT_FOUND_ERROR_CODE = 3;
 
     private final DateTimeUtils dateTimeUtils;
 
@@ -53,11 +51,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorDto> handleConflictException(ConflictException e) {
         return handleException(e, CONFLICT_ERROR_CODE, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(CredentialsException.class)
-    public ResponseEntity<ErrorDto> handleCredentialsException(CredentialsException e) {
-        return handleException(e, CREDENTIALS_ERROR_CODE, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
