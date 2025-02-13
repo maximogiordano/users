@@ -17,10 +17,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
     @InjectMocks
-    UserController userController; // system under test
+    UserController userController;
 
     @Mock
-    UserService userService; // dependency
+    UserService userService;
 
     @Test
     void signUp() {

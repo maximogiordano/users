@@ -29,22 +29,22 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @InjectMocks
-    UserService userService; // system under test
+    UserService userService;
 
     @Mock
-    UserRepository userRepository; // dependency
+    UserRepository userRepository;
 
     @Mock
-    ConversionService conversionService; // dependency
+    ConversionService conversionService;
 
     @Mock
-    DateTimeUtils dateTimeUtils; // dependency
+    DateTimeUtils dateTimeUtils;
 
     @Mock
-    PasswordEncoder passwordEncoder; // dependency
+    PasswordEncoder passwordEncoder;
 
     @Mock
-    JwtUtils jwtUtils; // dependency
+    JwtUtils jwtUtils;
 
     @Test
     void signUpOK() {

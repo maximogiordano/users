@@ -27,13 +27,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
     @InjectMocks
-    GlobalExceptionHandler globalExceptionHandler; // system under test
+    GlobalExceptionHandler globalExceptionHandler;
 
     @Mock
-    DateTimeUtils dateTimeUtils; // dependency
+    DateTimeUtils dateTimeUtils;
 
     @Mock
-    ConstraintViolation<?> constraintViolation; // internal mock
+    ConstraintViolation<?> constraintViolation; // internal use
 
     @Test
     void handleConstraintViolationException() {

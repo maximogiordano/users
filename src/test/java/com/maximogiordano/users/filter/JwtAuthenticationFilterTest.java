@@ -25,22 +25,22 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
     @InjectMocks
-    JwtAuthenticationFilter jwtAuthenticationFilter; // system under test
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Mock
-    JwtUtils jwtUtils; // dependency
+    JwtUtils jwtUtils;
 
     @Mock
-    HttpServletRequest request; // for internal use
+    HttpServletRequest request; // internal use
 
     @Mock
-    HttpServletResponse response; // for internal use
+    HttpServletResponse response; // internal use
 
     @Mock
-    FilterChain filterChain; // for internal use
+    FilterChain filterChain; // internal use
 
     @Mock
-    SecurityContext securityContext; // for internal use
+    SecurityContext securityContext; // internal use
 
     @Test
     void testNullHeader() throws ServletException, IOException {

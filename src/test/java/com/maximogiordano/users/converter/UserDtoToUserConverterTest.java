@@ -22,13 +22,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserDtoToUserConverterTest {
     @InjectMocks
-    UserDtoToUserConverter userDtoToUserConverter; // system under test
+    UserDtoToUserConverter userDtoToUserConverter;
 
     @Mock
-    PhoneDtoToPhoneConverter phoneDtoToPhoneConverter; // dependency
+    PhoneDtoToPhoneConverter phoneDtoToPhoneConverter;
 
     @Mock
-    DateTimeUtils dateTimeUtils;  // dependency
+    DateTimeUtils dateTimeUtils;
 
     @Test
     void convertWithListOfPhone() {

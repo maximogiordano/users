@@ -16,8 +16,8 @@ class JwtUtilsTest {
     static final String KEY = "eD7nH9JHgX1Q2YqVrZG3f7qPp0V57D1jE9vNjT2j2Y8=";
     static final long EXPIRATION = 15 * 60 * 1000;
 
-    JwtUtils jwtUtils; // system under test
-    InvalidTokenRepository invalidTokenRepository; // dependency
+    JwtUtils jwtUtils;
+    InvalidTokenRepository invalidTokenRepository;
 
     @BeforeEach
     void beforeEach() {
